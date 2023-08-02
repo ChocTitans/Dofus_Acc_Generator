@@ -86,7 +86,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
 
   await page.screenshot({ path: 'example.png' });
 
-  //----------------
+  //---------------- For Email ----------------//
   await page1.bringToFront();
   await page1.waitForSelector('li.mail-item-wrapper');
 
