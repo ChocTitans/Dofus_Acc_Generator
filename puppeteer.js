@@ -14,6 +14,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
 
   const page1 = await browser.newPage();
 
+  // ----- For Email ----- //
   const page = await browser.newPage();
 
   await page1.goto('https://10minute-email.com/');
@@ -24,6 +25,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
   
   console.log(`[${new Date()}] \x1b[32mAccount Creation Started ... \x1b[0m`);
 
+  // ----- For Account ----- //
   await page.goto('https://www.dofus.com/fr/mmorpg/jouer');
 
   await page.waitForTimeout(5000);
