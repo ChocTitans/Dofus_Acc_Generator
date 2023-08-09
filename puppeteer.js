@@ -28,7 +28,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
   // ----- For Account ----- //
   await page.goto('https://www.dofus.com/fr/mmorpg/jouer');
 
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(4000);
   await page.screenshot({ path: 'example.png' });
 
   await page.waitForSelector('.ak-accept');
