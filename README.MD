@@ -1,3 +1,3 @@
-Using puppetter & fingerprint for cloudflare bypass
+Using puppetter & fingerprint for cloudflare bypass & chromium 
 
 Documentation for it soon 
