@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 const randomstring = require('randomstring');
 const { plugin } = require('puppeteer-with-fingerprints');
 
+
 (async () => {
 
     const fingerprint = await plugin.fetch('', {
@@ -10,7 +11,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
     plugin.useFingerprint(fingerprint);
 
       
-  const browser = await plugin.launch({ });
+  const browser = await plugin.launch({ headless : false, args: ['--proxy-server=socks:46.20.98.0:12324:14a93d008b117:971d54abd8']});
 
   const page1 = await browser.newPage();
 
@@ -20,22 +21,23 @@ const { plugin } = require('puppeteer-with-fingerprints');
   await page1.goto('https://10minute-email.com/');
 
   await page1.waitForSelector('#i-email');
+  const currentTime = new Date().toLocaleTimeString();
 
   const email = await page1.$eval('#i-email', (element) => element.value);
   
-  console.log(`[${new Date()}] \x1b[32mAccount Creation Started ... \x1b[0m`);
+  console.log(`[${currentTime}] \x1b[32mAccount Creation Started ... \x1b[0m`);
 
   // ----- For Account ----- //
   await page.goto('https://www.dofus.com/fr/mmorpg/jouer');
 
-  await page1.waitForTimeout(7000);
+  await page1.waitForTimeout(8000);
 
   await page.waitForSelector('.ak-accept');
 
   await page.click('.ak-accept');
 
 
-  console.log(`[${new Date()}] \x1b[32mFilling Forms ...\x1b[0m`);
+  console.log(`[${currentTime}] \x1b[32mFilling Forms ...\x1b[0m`);
 
   const firstName = randomstring.generate({ length: 8, charset: 'alphabetic' });
   const lastName = randomstring.generate({ length: 8, charset: 'alphabetic' });
@@ -79,11 +81,11 @@ const { plugin } = require('puppeteer-with-fingerprints');
   await page.click('.ak-submit');
   
 
-  console.log(`[${new Date()}] \x1b[32mAccount Created Successfully \x1b[0m`);
+  console.log(`[${currentTime}] \x1b[32mAccount Created Successfully \x1b[0m`);
   await page.waitForTimeout(1000);
 
   //---------------- For Email ----------------//
-  console.log(`[${new Date()}] \x1b[32mVerifying Account ... \x1b[0m`);
+  console.log(`[${currentTime}] \x1b[32mVerifying Account ... \x1b[0m`);
 
   await page1.bringToFront();
 
@@ -117,18 +119,18 @@ const { plugin } = require('puppeteer-with-fingerprints');
 
   }
 
-  console.log(`[${new Date()}] \x1b[32mAccount Verified Successfully \x1b[0m`);
+  console.log(`[${currentTime}] \x1b[32mAccount Verified Successfully \x1b[0m`);
   
   // ----------------- For Ankama Shield ----------------- //
   await page1.waitForSelector('.ak-logo-desktop');
   await page1.click('.ak-logo-desktop');
 
-  console.log(`[${new Date()}] \x1b[32mDisabling Ankama Shield ... \x1b[0m`);
+  console.log(`[${currentTime}] \x1b[32mDisabling Ankama Shield ... \x1b[0m`);
 
   // Navigate to "https://account.ankama.com/fr/securite"
   await page1.goto('https://account.ankama.com/fr/securite');
 
-  await page1.waitForTimeout(5000); 
+  await page1.waitForTimeout(8000); 
 
   // Click on the element with class '.ak-accept'
   await page1.waitForSelector('.ak-accept');
@@ -186,8 +188,6 @@ const { plugin } = require('puppeteer-with-fingerprints');
 
     // Get the text content of the element inside the iframe
     const code = await frame2.$eval('span[style*="background:#ddd;"]', element => element.textContent);
-    console.log(code);
-
     // Switch back to the main page
     await page1.bringToFront();
 
@@ -238,7 +238,6 @@ const { plugin } = require('puppeteer-with-fingerprints');
     // Switch to the iframe
     await frame3.waitForSelector('span[style*="background:#ddd;"]');
     const code = await frame3.$eval('span[style*="background:#ddd;"]', element => element.textContent);
-    console.log(code);
 
     await page1.waitForTimeout(2000);
 
@@ -253,7 +252,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
     await page1.waitForSelector('input[type="submit"].btn.btn-primary.btn-lg[value="Valider"]');
     await page1.click('input[type="submit"].btn.btn-primary.btn-lg[value="Valider"]');
   }
-  console.log(`[${new Date()}] \x1b[32mAnkama Shield Disabled Successfully \x1b[0m`);
+  console.log(`[${currentTime}] \x1b[32mAnkama Shield Disabled Successfully \x1b[0m`);
 
   console.log(`Generated Email: ${email}`);
   console.log(`Generated Password: ${allPassword}`);
