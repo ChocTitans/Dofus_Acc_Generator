@@ -10,7 +10,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
     plugin.useFingerprint(fingerprint);
 
       
-  const browser = await plugin.launch({ headless: false });
+  const browser = await plugin.launch({ });
 
   const page1 = await browser.newPage();
 
@@ -28,8 +28,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
   // ----- For Account ----- //
   await page.goto('https://www.dofus.com/fr/mmorpg/jouer');
 
-  await page.waitForTimeout(4000);
-  await page.screenshot({ path: 'example.png' });
+  await page1.waitForTimeout(7000);
 
   await page.waitForSelector('.ak-accept');
 
@@ -81,15 +80,27 @@ const { plugin } = require('puppeteer-with-fingerprints');
   
 
   console.log(`[${new Date()}] \x1b[32mAccount Created Successfully \x1b[0m`);
-  await page.waitForTimeout(3000);
-
-  console.log(`Generated Email: ${email}`);
-  console.log(`Generated Password: ${allPassword}`);
-
-  await page.screenshot({ path: 'example.png' });
+  await page.waitForTimeout(1000);
 
   //---------------- For Email ----------------//
+  console.log(`[${new Date()}] \x1b[32mVerifying Account ... \x1b[0m`);
+
   await page1.bringToFront();
+
+
+  await page1.waitForXPath('//span[text()="Refresh"]');
+
+  // Find the span element with the text "Refresh"
+  const [refreshSpan1] = await page1.$x('//span[text()="Refresh"]');
+
+  // Click on the found span element
+  if (refreshSpan1) {
+    await refreshSpan1.click();
+    await page1.waitForTimeout(2500); 
+    await refreshSpan1.click();
+
+  }
+
   await page1.waitForSelector('li.mail-item-wrapper');
 
   await page1.click('li.mail-item-wrapper');
@@ -101,12 +112,152 @@ const { plugin } = require('puppeteer-with-fingerprints');
   if (frame) {
     await frame.waitForSelector('a[target="_blank"][href^="https://www.dofus.com/fr/mmorpg/jouer?guid="]');
 
-    await frame.click('a[target="_blank"][href^="https://www.dofus.com/fr/mmorpg/jouer?guid="]');
+    const link = await frame.$eval('a[target="_blank"][href^="https://www.dofus.com/fr/mmorpg/jouer?guid="]', element => element.href);
+    await page1.goto(link);
 
-    await page1.waitForTimeout(1000); 
-    page1.bringToFront(); 
   }
-  await page1.screenshot({ path: 'example.png' });
+
+  console.log(`[${new Date()}] \x1b[32mAccount Verified Successfully \x1b[0m`);
+  
+  // ----------------- For Ankama Shield ----------------- //
+  await page1.waitForSelector('.ak-logo-desktop');
+  await page1.click('.ak-logo-desktop');
+
+  console.log(`[${new Date()}] \x1b[32mDisabling Ankama Shield ... \x1b[0m`);
+
+  // Navigate to "https://account.ankama.com/fr/securite"
+  await page1.goto('https://account.ankama.com/fr/securite');
+
+  await page1.waitForTimeout(5000); 
+
+  // Click on the element with class '.ak-accept'
+  await page1.waitForSelector('.ak-accept');
+  await page1.click('.ak-accept');
+
+
+
+  await page1.waitForSelector('input[name="password"]');
+  await page1.type('input[name="password"]', allPassword);
+
+  await page1.waitForSelector('input[name="login"]');
+  const inputElement = await page1.$('input[name="login"]');
+  
+  // Clear the input field
+  await inputElement.click({ clickCount: 3 }); // Select and delete existing value
+  await inputElement.type(email); // Type the new value
+
+  // Wait for and click on the link with the specified CSS selector
+  await page1.waitForSelector('#login_sub');
+  await page1.click('#login_sub');
+
+  await page1.waitForTimeout(2000); 
+
+  // Wait for and click on another link with the specified CSS selector
+
+  await page.bringToFront()
+  await page.goto('https://10minute-email.com/');
+
+  await page.waitForXPath('//span[text()="Refresh"]');
+
+  // Find the span element with the text "Refresh"
+  const [refreshSpan] = await page.$x('//span[text()="Refresh"]');
+
+  // Click on the found span element
+  if (refreshSpan) {
+    await refreshSpan.click();
+    await page1.waitForTimeout(4500);
+    await refreshSpan.click();
+    await page1.waitForTimeout(1500);
+    await refreshSpan.click();
+
+  }
+
+  await page.waitForSelector('li.mail-item-wrapper');
+
+  await page.click('li.mail-item-wrapper');
+  
+  await page.waitForSelector('iframe.message-fr');
+
+  const frame2 = page.frames().find(frame => frame.name() === 'fullmessage');
+
+  if (frame2) {
+    // Switch to the iframe
+    await frame2.waitForSelector('span[style*="background:#ddd;"]');
+
+    // Get the text content of the element inside the iframe
+    const code = await frame2.$eval('span[style*="background:#ddd;"]', element => element.textContent);
+    console.log(code);
+
+    // Switch back to the main page
+    await page1.bringToFront();
+
+    // Find the input field by ID and enter the extracted code
+    await page1.waitForSelector('input.form-control[name="security_code"]');
+    await page1.type('input.form-control[name="security_code"]', code);
+  
+
+    // Find and click the submit button with the specified CSS selector
+    await page1.waitForSelector('.ak-container.ak-block-button-form input[type="submit"]');
+    await page1.click('.ak-container.ak-block-button-form input[type="submit"]');
+  }
+  await page1.waitForTimeout(1500)
+  await page1.goto('https://account.ankama.com/fr/securite/ankama-shield');
+  await page1.waitForTimeout(1500);
+
+  await page1.waitForSelector('a.btn.btn-primary.btn-sm[href="/fr/securite/ankama-shield/desactiver"]');
+
+  // Click on the anchor element
+  await page1.click('a.btn.btn-primary.btn-sm[href="/fr/securite/ankama-shield/desactiver"]');
+
+  await page.bringToFront()
+  await page.goto('https://10minute-email.com/');
+
+  await page.waitForXPath('//span[text()="Refresh"]');
+
+  // Find the span element with the text "Refresh"
+  const [refreshSpan3] = await page.$x('//span[text()="Refresh"]');
+
+  // Click on the found span element
+  if (refreshSpan3) {
+    await refreshSpan3.click();
+    await page1.waitForTimeout(4500);
+    await refreshSpan3.click();
+    await page1.waitForTimeout(1500);
+    await refreshSpan3.click();
+
+  }
+  await page.waitForSelector('li.mail-item-wrapper');
+
+  await page.click('li.mail-item-wrapper');
+  
+  await page.waitForSelector('iframe.message-fr');
+
+  const frame3 = page.frames().find(frame => frame.name() === 'fullmessage');
+
+  if (frame3) {
+    // Switch to the iframe
+    await frame3.waitForSelector('span[style*="background:#ddd;"]');
+    const code = await frame3.$eval('span[style*="background:#ddd;"]', element => element.textContent);
+    console.log(code);
+
+    await page1.waitForTimeout(2000);
+
+    await page1.bringToFront();
+
+    // Find the input field by ID and enter the extracted code
+  
+    await page1.waitForSelector('input.form-control.ak-field-code[name="code"]');
+    await page1.type('input.form-control.ak-field-code[name="code"]', code);
+
+    // Find and click the submit button with the specified CSS selector
+    await page1.waitForSelector('input[type="submit"].btn.btn-primary.btn-lg[value="Valider"]');
+    await page1.click('input[type="submit"].btn.btn-primary.btn-lg[value="Valider"]');
+  }
+  console.log(`[${new Date()}] \x1b[32mAnkama Shield Disabled Successfully \x1b[0m`);
+
+  console.log(`Generated Email: ${email}`);
+  console.log(`Generated Password: ${allPassword}`);
+
 
   await browser.close();
 })();
