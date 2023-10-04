@@ -11,7 +11,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
     plugin.useFingerprint(fingerprint);
 
       
-  const browser = await plugin.launch({ headless : false, args: ['--proxy-server=socks:46.20.98.0:12324:14a93d008b117:971d54abd8']});
+  const browser = await plugin.launch({ headless : true, args: ['--proxy-server=socks:46.20.98.0:12324:14a93d008b117:971d54abd8']});
 
   const page1 = await browser.newPage();
 
@@ -30,7 +30,7 @@ const { plugin } = require('puppeteer-with-fingerprints');
   // ----- For Account ----- //
   await page.goto('https://www.dofus.com/fr/mmorpg/jouer');
 
-  await page1.waitForTimeout(8000);
+  await page.waitForTimeout(8000);
 
   await page.waitForSelector('.ak-accept');
 
