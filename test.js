@@ -40,6 +40,8 @@ const fs = require('fs');
     await page1.waitForSelector('.el-button');
     await page1.click('.el-button');
 
+    await page1.click('button.el-button.el-button--small.el-button--primary');
+
     await page1.waitForTimeout(2000);
 
     await page1.waitForSelector('#i-email');
@@ -50,6 +52,7 @@ const fs = require('fs');
     console.log(email);
     await page1.waitForTimeout(2000);
 
-    await browser.close(); // Close the browser using the unique name
   }
+  await browser.close(); // Close the browser using the unique name
+
 })();
